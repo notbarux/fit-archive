@@ -1,74 +1,133 @@
-# Fit Archive — Google Fit Insights
+# Fit Archive — Vue + Vite
 
-Dashboard statico per leggere un archivio ZIP di Google Takeout / Google Fit. Non richiede backend, account, database o build step.
+Dashboard statica per analizzare localmente gli archivi ZIP di Google Takeout / Google Fit. Il progetto usa Vue 3, TypeScript e Vite; la decompressione e tutte le analisi avvengono nel browser e non richiedono un backend.
+
+## Requisiti
+
+- Node.js **22.12+** (richiesto dalla linea Vite 8).
+- npm incluso con Node.js.
+
+## Sviluppo locale
+
+```bash
+npm install
+npm run dev
+```
+
+Il server di sviluppo Vite mostra l'URL locale nella console.
+
+## Type-check e build
+
+```bash
+npm run typecheck
+npm run build
+npm run preview
+```
+
+La build di produzione viene generata direttamente nella cartella **`docs/`**. In Vite l'opzione equivalente a `buildDir: "docs"` è `build.outDir: "docs"`, configurata in `vite.config.ts`. Il `base: './'` permette di usare gli asset sia su un dominio root sia sotto il percorso `/<repository>/` di GitHub Pages.
 
 ## Pubblicazione su GitHub Pages
 
-1. Crea un repository GitHub, ad esempio `fit-archive`.
-2. Carica **tutti** i file e le cartelle di questo progetto nella root del repository:
-   - `index.html`
-   - `styles.css`
-   - `app.js`
-   - `jszip.min.js`
-3. Apri **Settings → Pages** nel repository.
-4. In **Build and deployment**, seleziona **Deploy from a branch**, scegli il branch `main` e la cartella `/ (root)`, quindi salva.
-5. Apri l'indirizzo GitHub Pages mostrato nella stessa schermata.
+1. Esegui `npm install` e `npm run build`.
+2. Esegui il commit e il push dei sorgenti e della cartella generata `docs/`.
+3. Nel repository apri **Settings → Pages**.
+4. In **Build and deployment**, scegli **Deploy from a branch**, branch `main`, cartella **`/docs`**.
+5. Salva e apri l'URL GitHub Pages mostrato da GitHub.
 
-Non è necessario configurare un workflow, installare Node.js o avviare un server applicativo.
+La build copia automaticamente `public/.nojekyll` in `docs/.nojekyll`.
 
-## Utilizzo
+## Struttura del progetto
 
-1. Apri la pagina pubblicata.
-2. Trascina il file ZIP di Google Takeout nel riquadro, oppure selezionalo dal dispositivo.
-3. Attendi che l'elaborazione termini: i grafici e le tabelle vengono costruiti nel browser.
-4. Usa **Esporta CSV** per scaricare una tabella giornaliera con passi, km e sonno.
+```text
+fit-archive/
+├── index.html                 # HTML entry-point di Vite
+├── vite.config.ts             # plugin Vue, base relativo e output docs/
+├── tsconfig.json              # TypeScript strict
+├── package.json               # dipendenze e script npm
+├── public/
+│   └── .nojekyll               # copiato nella build GitHub Pages
+├── src/
+│   ├── main.ts                 # bootstrap Vue e CSS globale
+│   ├── App.vue                 # composizione principale della dashboard
+│   ├── styles.css              # design system e layout responsive
+│   ├── components/
+│   │   ├── AppHeader.vue       # header, upload ZIP e drag & drop
+│   │   ├── HelpDialog.vue      # modale con istruzioni Google Takeout
+│   │   ├── KpiStrip.vue        # metriche all-time e intervalli temporali
+│   │   ├── MonthlyBarsChart.vue# grafici mensili riutilizzabili
+│   │   ├── DistributionChart.vue # istogramma, media, mediana e curva normale
+│   │   ├── StepsSection.vue    # statistiche, classifiche e tabelle passi
+│   │   └── SleepSection.vue    # statistiche, classifiche e tabelle sonno
+│   ├── composables/
+│   │   └── useFitArchive.ts    # stato importazione e messaggi UI
+│   ├── services/
+│   │   ├── googleFitParser.ts  # lettura ZIP, JSON/CSV e normalizzazione
+│   │   └── exportCsv.ts        # esportazione dei dati giornalieri
+│   ├── types/
+│   │   └── fit.ts              # interfacce e tipi condivisi
+│   └── utils/
+│       ├── analytics.ts        # aggregazioni, classifiche e distribuzioni
+│       ├── date.ts             # date locali e formattazione calendario
+│       └── numbers.ts          # parsing e formattazione numerica
+├── docs/                       # output generato da `npm run build`
+└── JSZIP-LICENSE.markdown      # licenza della dipendenza JSZip
+```
 
-Per creare l'archivio: [Google Takeout](https://takeout.google.com/) → deseleziona tutto → seleziona **Fit** → esporta in ZIP.
+## Dove modificare cosa
 
-## Cosa analizza
+| Necessità | File |
+|---|---|
+| Cambiare colori, spaziature, font e responsive layout | `src/styles.css` |
+| Modificare l'header, il caricamento o il drag & drop | `src/components/AppHeader.vue` |
+| Cambiare la guida Google Takeout | `src/components/HelpDialog.vue` |
+| Modificare i KPI all-time | `src/components/KpiStrip.vue` |
+| Cambiare il grafico mensile | `src/components/MonthlyBarsChart.vue` |
+| Cambiare istogramma, media, mediana o curva | `src/components/DistributionChart.vue` e `src/utils/analytics.ts` |
+| Aggiungere o modificare le statistiche dei passi | `src/components/StepsSection.vue` e `src/utils/analytics.ts` |
+| Aggiungere o modificare le statistiche del sonno | `src/components/SleepSection.vue` e `src/utils/analytics.ts` |
+| Adattare i formati JSON/CSV di Google Takeout | `src/services/googleFitParser.ts` |
+| Modificare i tipi dei dati normalizzati | `src/types/fit.ts` |
+| Modificare parsing/formato di date o numeri | `src/utils/date.ts`, `src/utils/numbers.ts` |
 
-### Passi
+## Analisi disponibili
 
-- Media giornaliera all-time, per anno e per mese.
-- Totale dei passi e numero di giorni con registrazioni.
-- Classifica dei giorni con più passi (Top 5 / 10 / 20).
-- Classifica separata dei giorni con più km, se è presente una misura di distanza.
-- Distanza in km mostrata anche nella classifica dei passi.
-- Tabella mensile compatta: una riga per anno e 12 colonne per i mesi.
+### Passi e distanza
+
+- Media giornaliera e totale all-time, con intervallo specifico dei giorni usati.
+- Medie annuali e mensili; matrice mensile compatta con anni sulle righe e mesi sulle colonne.
+- Classifiche dei giorni con più passi e più chilometri.
+- Distanza associata ai giorni in classifica quando è presente nell'export.
+- Andamento mensile e distribuzione dei passi giornalieri con media, mediana e curva normale di riferimento.
 
 ### Sonno
 
-- Durata totale e media per notte.
-- Totale e media mensile e annuale.
-- Classifica delle notti più lunghe e più brevi.
-- Classifica delle settimane con più e meno sonno, ordinabile per media per notte o totale settimanale.
-- Giorno della settimana con la maggiore durata media del sonno.
+- Durata complessiva e media per notte all-time, con intervallo specifico delle notti usate.
+- Totali e medie mensili e annuali.
+- Classifiche delle notti e delle settimane con più e meno sonno.
+- Giorno della settimana con durata media maggiore e minore.
+- Andamento mensile e distribuzione delle ore di sonno con media, mediana e curva normale di riferimento.
 
-Le notti sono attribuite alla data del risveglio. Le settimane iniziano il lunedì.
+Le schede KPI all-time scorrono orizzontalmente. I grafici di distribuzione mostrano frequenze osservate e sovrappongono una curva normale teorica come riferimento visivo: non è un modello predittivo e non implica che la distribuzione reale sia normale.
 
 ## Formati e criteri di lettura
 
-Il parser considera le strutture JSON dei dataset di Google Fit (`All Data`), i CSV delle metriche giornaliere (`Daily activity metrics`) e le sessioni di `All sessions`.
+Il parser considera i dataset JSON di Google Fit (`All Data`), i CSV delle metriche giornaliere (`Daily activity metrics`) e le sessioni di `All sessions`.
 
-- **Passi:** dà priorità ai dati derivati `estimated_steps` di Google Fit, quindi agli altri dataset derivati; usa i CSV giornalieri come fallback per i giorni privi di dati JSON. Nei punti temporali sovrapposti mantiene una sola registrazione per ridurre i doppi conteggi.
-- **Distanza:** usa `com.google.distance.delta` (normalizzato in metri/km) o la colonna distanza del CSV. Mostra soltanto misure trovate nell'archivio: non stima i km dalla lunghezza del passo.
-- **Sonno:** se sono presenti segmenti `com.google.sleep.segment`, somma le fasi di sonno (inclusi i segmenti non classificati) ed esclude i segmenti di veglia e fuori dal letto. In assenza di fasi, usa la durata delle sessioni identificate come sonno.
-- **Giorni senza registrazioni:** non sono trasformati in zero. Le medie sono calcolate sui soli giorni/notte con una misura disponibile; il numero di giorni/notte è riportato nelle tabelle.
-- **Fusi orari:** i timestamp vengono convertiti nel fuso orario locale del browser. I risultati giornalieri possono quindi dipendere dal fuso orario del dispositivo su cui viene aperta la pagina.
-
-Il formato dell'esportazione può variare a seconda della versione di Google Fit, delle app collegate e dei dati effettivamente sincronizzati. La dashboard mostra avvisi quando una metrica non è stata trovata.
+- **Passi:** priorità ai dati derivati `estimated_steps`, quindi agli altri dataset derivati; CSV giornalieri come fallback per le date non coperte dai JSON. Gli intervalli sovrapposti vengono deduplicati.
+- **Distanza:** usa `com.google.distance.delta` normalizzato in km o la colonna distanza dei CSV. I km non vengono stimati dai passi.
+- **Sonno:** se sono presenti segmenti `com.google.sleep.segment`, somma le fasi del sonno ed esclude veglia e segmenti fuori dal letto. Se mancano le fasi, usa la durata delle sessioni identificate come sonno.
+- **Giorni senza registrazioni:** non sono trasformati in zero. Le medie sono calcolate soltanto sui giorni/notte con una misura disponibile.
+- **Date:** i timestamp vengono convertiti nel fuso orario locale del browser.
 
 ## Privacy e dipendenze
 
-L'archivio viene letto in memoria tramite JavaScript nel browser. Il progetto non contiene richieste HTTP applicative, API, analytics, backend o persistenza dei dati. La libreria JSZip è inclusa localmente (`jszip.min.js`), quindi anche l'apertura di ZIP non richiede CDN esterni. Il CSV esportato viene generato localmente dal browser.
+Il file viene letto con `File.arrayBuffer()` e decompresso tramite JSZip direttamente nella memoria del browser. Il progetto non invia dati a server, non usa API, analytics o backend. Vue, JSZip e il codice dell'app vengono inclusi negli asset statici creati dalla build; la pagina pubblicata non dipende da CDN.
 
-La pagina non salva automaticamente i dati tra una visita e l'altra: per aggiornare l'analisi occorre importare nuovamente il file ZIP.
+JSZip è distribuito secondo licenza MIT; il testo della licenza è incluso in `JSZIP-LICENSE.markdown`.
 
-JSZip v3.10.1 è distribuito secondo la licenza MIT; il testo della licenza è incluso in `JSZIP-LICENSE.markdown`.
+## Limiti
 
-## Limiti da conoscere
-
-- Google Takeout può contenere esportazioni parziali o fonti diverse; il parser non può ricostruire misurazioni mai sincronizzate in Google Fit.
-- Il sonno basato sulla sola sessione misura la durata tra inizio e fine sessione, non necessariamente il tempo effettivamente dormito. Quando ci sono segmenti di sonno, la dashboard li preferisce.
-- I km possono non essere disponibili anche quando i passi sono presenti.
-- L'analisi è descrittiva e non costituisce una valutazione medica.
+- Gli export possono contenere dati parziali, fonti differenti o misurazioni non sincronizzate.
+- Una sessione sonno priva di segmenti misura l'intervallo tra inizio e fine, non necessariamente il tempo effettivo trascorso dormendo.
+- I chilometri possono non essere presenti anche quando sono disponibili i passi.
+- Le statistiche sono descrittive e non costituiscono una valutazione medica.

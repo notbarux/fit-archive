@@ -1,6 +1,6 @@
 # Fit Archive — Vue + Vite
 
-Dashboard statica per analizzare localmente gli archivi ZIP di Google Takeout / Google Fit. Il progetto usa Vue 3, TypeScript e Vite; la decompressione e tutte le analisi avvengono nel browser e non richiedono un backend. Versione corrente: **2.1.0**.
+Dashboard statica per analizzare localmente gli archivi ZIP di Google Takeout / Google Fit. Il progetto usa Vue 3, TypeScript e Vite; la decompressione e tutte le analisi avvengono nel browser e non richiedono un backend. Versione corrente: **2.1.3**.
 
 ## Requisiti
 
@@ -15,6 +15,8 @@ npm run dev
 ```
 
 Il server di sviluppo Vite mostra l'URL locale nella console.
+
+La versione mostrata accanto al nome **fit-archive** nell'header viene letta da `package.json` durante la build tramite `vite.config.ts`: per cambiarla è sufficiente aggiornare il campo `version` in `package.json`. Non esiste una seconda stringa di versione da mantenere sincronizzata.
 
 ## Type-check e build
 
@@ -142,3 +144,17 @@ JSZip è distribuito secondo licenza MIT; il testo della licenza è incluso in `
 - Su smartphone e tablet lo scorrimento orizzontale avviene con swipe laterale nativo, mentre i gesti verticali continuano a scorrere la pagina.
 - Le etichette numeriche di media e mediana sono semplici valori senza riquadri; la legenda identifica i colori.
 - I tick dell'asse X sono generati dai centri dei bin effettivamente disegnati nell'istogramma, non da una scala indipendente.
+
+
+## Aggiornamenti 2.1.2
+
+- L'header mostra la versione corrente accanto al nome `fit-archive`.
+- La versione è iniettata da Vite leggendo `package.json`, che rimane l'unica fonte di verità.
+- Per rilasciare una nuova versione è sufficiente aggiornare `package.json`: la versione dell'header si aggiorna automaticamente alla build successiva.
+
+
+## Aggiornamenti 2.1.3
+
+- Corretto il type-check della versione mostrata nell'header: `AppHeader.vue` espone `__APP_VERSION__` come binding di `<script setup>` (`appVersion`), così il template non cerca la costante globale direttamente nel contesto dell'istanza Vue.
+- Aggiunto `src/env.d.ts` esplicitamente agli input di `tsconfig.json` per includere la dichiarazione TypeScript della costante iniettata da Vite.
+- La versione continua a essere letta esclusivamente da `package.json`.

@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import type { FitMeta, ParseProgress } from '../types/fit'
 
+// Vite replaces this compile-time constant with package.json's version.
+const appVersion = __APP_VERSION__
+
 withDefaults(defineProps<{
   meta: FitMeta | null
   status: string
@@ -75,6 +78,7 @@ function onDrop(event: DragEvent) {
     <a class="brand" href="./" aria-label="Fit Archive">
       <span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2.2-6 4.1 12 2.2-6H21" /></svg></span>
       <span>fit<span class="brand-light">archive</span></span>
+      <span class="brand-version" :aria-label="`Versione ${appVersion}`">v{{ appVersion }}</span>
     </a>
 
     <div class="header-center" aria-live="polite">

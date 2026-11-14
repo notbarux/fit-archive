@@ -279,3 +279,6 @@ td:first-child{font-size:11px}
   stroke: rgba(220,237,225,.32);
   stroke-width: 1;
 }
+
+/* App version is injected from package.json by vite.config.ts. */
+.brand-version{align-self:center;margin-left:-5px;color:#829187;font:500 9px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.035em;white-space:nowrap;opacity:.9}

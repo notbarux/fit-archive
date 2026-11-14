@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { FitAnalytics } from '../types/fit'
 import { dateRangeLabel } from '../utils/date'
 import { compactNumber, countLabel, formatDuration, formatLongDuration, numberFmt } from '../utils/numbers'
+import { handleShiftWheelScroll } from '../composables/useShiftWheelScroll'
 
 const props = defineProps<{ data: FitAnalytics }>()
 
@@ -46,7 +47,7 @@ const cards = computed(() => {
 </script>
 
 <template>
-  <div class="kpi-grid" aria-label="Indicatori all-time">
+  <div class="kpi-grid" aria-label="Indicatori all-time" @wheel="handleShiftWheelScroll">
     <article v-for="card in cards" :key="card.label" class="kpi-card">
       <div class="kpi-label">{{ card.label }}</div>
       <div class="kpi-value" :class="{ 'kpi-accent': card.accent }">{{ card.value }}</div>

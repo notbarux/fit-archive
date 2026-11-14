@@ -59,7 +59,8 @@ fit-archive/
 │   │   ├── StepsSection.vue    # statistiche, classifiche e tabelle passi
 │   │   └── SleepSection.vue    # statistiche, classifiche e tabelle sonno
 │   ├── composables/
-│   │   └── useFitArchive.ts    # stato importazione e messaggi UI
+│   │   ├── useFitArchive.ts    # stato importazione e messaggi UI
+│   │   └── useShiftWheelScroll.ts # Shift + rotella per gli scroller orizzontali
 │   ├── services/
 │   │   ├── googleFitParser.ts  # lettura ZIP, JSON/CSV e normalizzazione
 │   │   └── exportCsv.ts        # esportazione dei dati giornalieri
@@ -97,7 +98,7 @@ fit-archive/
 - Medie annuali e mensili; matrice mensile compatta con anni sulle righe e mesi sulle colonne.
 - Classifiche dei giorni con più passi e più chilometri.
 - Distanza associata ai giorni in classifica quando è presente nell'export.
-- Andamento mensile scorrevole sull’intera cronologia: rotella del mouse, Shift+rotella, trackpad, pulsanti di navigazione e swipe touch.
+- Andamento mensile scorrevole sull’intera cronologia: Shift+rotella su desktop, pulsanti di navigazione e swipe orizzontale su touch. La rotella verticale normale continua a scorrere la pagina.
 - Distribuzione dei passi giornalieri con istogramma, media e mediana evidenziate sopra le rispettive linee, assi X/Y con scale ricavate dai dati e curva normale di riferimento.
 
 ### Sonno
@@ -106,10 +107,10 @@ fit-archive/
 - Totali e medie mensili e annuali.
 - Classifiche delle notti e delle settimane con più e meno sonno.
 - Giorno della settimana con durata media maggiore e minore.
-- Andamento mensile scorrevole con gli stessi controlli desktop e mobile.
+- Andamento mensile scorrevole con gli stessi controlli desktop e mobile: Shift+rotella, pulsanti e swipe orizzontale; lo scroll verticale resta alla pagina.
 - Distribuzione delle ore di sonno con istogramma, media e mediana evidenziate sopra le rispettive linee, assi X/Y con scale ricavate dai dati e curva normale di riferimento.
 
-Le schede KPI all-time scorrono orizzontalmente. I due elenchi dei record passi/distanza e le classifiche delle notti sono affiancati su desktop e si dispongono in colonna su schermi più stretti. I grafici di distribuzione mostrano frequenze osservate e sovrappongono una curva normale teorica come riferimento visivo: non è un modello predittivo e non implica che la distribuzione reale sia normale.
+Le schede KPI all-time scorrono orizzontalmente con Shift+rotella su desktop e swipe orizzontale su touch; lo scroll verticale normale non viene intercettato e continua a muovere la pagina. I due elenchi dei record passi/distanza e le classifiche delle notti sono affiancati su desktop e si dispongono in colonna su schermi più stretti. I grafici di distribuzione mostrano frequenze osservate e sovrappongono una curva normale teorica come riferimento visivo: non è un modello predittivo e non implica che la distribuzione reale sia normale.
 
 ## Formati e criteri di lettura
 
@@ -133,3 +134,11 @@ JSZip è distribuito secondo licenza MIT; il testo della licenza è incluso in `
 - Una sessione sonno priva di segmenti misura l'intervallo tra inizio e fine, non necessariamente il tempo effettivo trascorso dormendo.
 - I chilometri possono non essere presenti anche quando sono disponibili i passi.
 - Le statistiche sono descrittive e non costituiscono una valutazione medica.
+
+
+## Aggiornamenti 2.1.1
+
+- Gli scroller delle medie e dei grafici rispondono a Shift+rotella; la rotella verticale senza Shift resta dedicata allo scorrimento della pagina.
+- Su smartphone e tablet lo scorrimento orizzontale avviene con swipe laterale nativo, mentre i gesti verticali continuano a scorrere la pagina.
+- Le etichette numeriche di media e mediana sono semplici valori senza riquadri; la legenda identifica i colori.
+- I tick dell'asse X sono generati dai centri dei bin effettivamente disegnati nell'istogramma, non da una scala indipendente.

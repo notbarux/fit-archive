@@ -230,12 +230,6 @@ td:first-child{font-size:11px}
 .monthly-chart-viewport .bar-value{font-size:10px}
 
 /* Distribution chart labels and scales. */
-.distribution-callout rect{stroke-width:1;}
-.distribution-callout text{font:700 10px system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:.035em}
-.distribution-callout-mean rect{fill:rgba(243,199,119,.13);stroke:rgba(243,199,119,.8)}
-.distribution-callout-mean text{fill:#f6d697}
-.distribution-callout-median rect{fill:rgba(134,201,255,.12);stroke:rgba(134,201,255,.82)}
-.distribution-callout-median text{fill:#a9d9ff}
 .distribution-y-axis-title{font-size:11px;fill:#9aa99d}
 
 /* Keep related rankings paired on desktop and give the sleep tables clear separation. */
@@ -262,4 +256,26 @@ td:first-child{font-size:11px}
   .monthly-scroll-hint{font-size:9px}
   .monthly-scroll-button{width:29px;height:28px}
   .monthly-chart-viewport .bar-col{flex-basis:58px;width:58px;min-width:58px;max-width:58px}
+}
+
+/* Horizontal scrollers: intentional navigation only; vertical gestures belong to the page. */
+.kpi-grid,
+.sleep-kpis,
+.monthly-chart-viewport {
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+}
+
+/* Distribution markers use plain numeric labels; the legend identifies each color. */
+.distribution-marker-label {
+  font: 700 12px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: .01em;
+  pointer-events: none;
+}
+.distribution-marker-label-mean { fill: #f6d697; }
+.distribution-marker-label-median { fill: #a9d9ff; }
+.distribution-axis-baseline,
+.distribution-axis-tick {
+  stroke: rgba(220,237,225,.32);
+  stroke-width: 1;
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { distributionStats } from '../utils/analytics'
-import { formatCompact, formatHours, numberFmt, oneDecimal } from '../utils/numbers'
+import { numberFmt, oneDecimal } from '../utils/numbers'
 
 const props = defineProps<{
   values: number[]
@@ -24,7 +24,7 @@ const model = computed(() => {
   const height = 370
   const left = 76
   const right = 28
-  const top = 70
+  const top = 66
   const bottom = 76
   const plotWidth = width - left - right
   const plotHeight = height - top - bottom
@@ -51,27 +51,33 @@ const model = computed(() => {
   const curvePath = stats.curve
     .map((point, index) => `${index === 0 ? 'M' : 'L'}${x(point.x).toFixed(2)},${y(point.y).toFixed(2)}`)
     .join(' ')
-  const meanText = props.kind === 'steps' ? numberFmt.format(Math.round(stats.mean)) : formatHours(stats.mean)
-  const medianText = props.kind === 'steps' ? numberFmt.format(Math.round(stats.median)) : formatHours(stats.median)
-  const axisLabels = Array.from({ length: 6 }, (_, index) => {
-    const value = stats.min + ((stats.max - stats.min) * index / 5)
+
+  // Labels are positioned at actual histogram-bin centers, not at an unrelated
+  // evenly-spaced scale. This keeps every X tick tied to a visible bar.
+  const tickCount = Math.min(6, stats.bins.length)
+  const tickIndices = [...new Set(Array.from({ length: tickCount }, (_, index) =>
+    Math.round(index * (stats.bins.length - 1) / Math.max(1, tickCount - 1)),
+  ))]
+  const axisTicks = tickIndices.map((index) => {
+    const bin = stats.bins[index]
     return {
-      x: x(value),
-      text: props.kind === 'steps' ? formatCompact(value) : `${oneDecimal.format(value)} h`,
+      x: x(bin.center),
+      text: props.kind === 'steps' ? numberFmt.format(Math.round(bin.center)) : oneDecimal.format(bin.center),
     }
   })
+
+  const meanText = props.kind === 'steps'
+    ? numberFmt.format(Math.round(stats.mean))
+    : oneDecimal.format(stats.mean)
+  const medianText = props.kind === 'steps'
+    ? numberFmt.format(Math.round(stats.median))
+    : oneDecimal.format(stats.median)
+  const labelWidth = Math.max(meanText.length, medianText.length) * 8 + 12
+  const labelsNeedStacking = Math.abs(x(stats.mean) - x(stats.median)) < labelWidth
   const yTicks: Array<{ value: number; y: number }> = []
   for (let value = 0; value <= yMax + yStep * 0.001; value += yStep) {
     yTicks.push({ value, y: y(value) })
   }
-
-  const labelWidth = props.kind === 'steps' ? 150 : 130
-  const clampLabelX = (value: number) => Math.min(width - right - labelWidth / 2, Math.max(left + labelWidth / 2, value))
-  const meanLabelX = clampLabelX(x(stats.mean))
-  const medianLabelX = clampLabelX(x(stats.median))
-  const labelsNeedStacking = Math.abs(meanLabelX - medianLabelX) < labelWidth + 8
-  const meanLabelY = 6
-  const medianLabelY = labelsNeedStacking ? 33 : 6
 
   return {
     width,
@@ -79,26 +85,22 @@ const model = computed(() => {
     left,
     right,
     top,
-    bottom,
     plotWidth,
     plotHeight,
     yTicks,
+    axisTicks,
     bars,
     curvePath,
     meanX: x(stats.mean),
     medianX: x(stats.median),
-    axisLabels,
     meanText,
     medianText,
-    meanLabelX,
-    medianLabelX,
-    meanLabelY,
-    medianLabelY,
-    labelWidth,
+    meanLabelY: 17,
+    medianLabelY: labelsNeedStacking ? 36 : 17,
     sampleCount: stats.count,
     deviationText: props.kind === 'steps'
       ? `${numberFmt.format(Math.round(stats.deviation))} passi`
-      : formatHours(stats.deviation),
+      : `${oneDecimal.format(stats.deviation)} h`,
   }
 })
 </script>
@@ -139,19 +141,16 @@ const model = computed(() => {
 
       <line class="distribution-marker distribution-mean" :x1="model.meanX" :x2="model.meanX" :y1="model.top" :y2="model.top + model.plotHeight" />
       <line class="distribution-marker distribution-median" :x1="model.medianX" :x2="model.medianX" :y1="model.top" :y2="model.top + model.plotHeight" />
+      <text class="distribution-marker-label distribution-marker-label-mean" :x="model.meanX" :y="model.meanLabelY" text-anchor="middle">{{ model.meanText }}</text>
+      <text class="distribution-marker-label distribution-marker-label-median" :x="model.medianX" :y="model.medianLabelY" text-anchor="middle">{{ model.medianText }}</text>
 
-      <g class="distribution-callout distribution-callout-mean" :transform="`translate(${model.meanLabelX}, ${model.meanLabelY})`">
-        <rect :x="-model.labelWidth / 2" y="0" :width="model.labelWidth" height="22" rx="6" />
-        <text y="15" text-anchor="middle">MEDIA · {{ model.meanText }}</text>
+      <line class="distribution-axis-baseline" :x1="model.left" :x2="model.width - model.right" :y1="model.top + model.plotHeight" :y2="model.top + model.plotHeight" />
+      <g v-for="(tick, index) in model.axisTicks" :key="`${tick.x}-${index}`">
+        <line class="distribution-axis-tick" :x1="tick.x" :x2="tick.x" :y1="model.top + model.plotHeight" :y2="model.top + model.plotHeight + 6" />
+        <text class="distribution-axis-label" :x="tick.x" :y="model.height - 30" text-anchor="middle">{{ tick.text }}</text>
       </g>
-      <g class="distribution-callout distribution-callout-median" :transform="`translate(${model.medianLabelX}, ${model.medianLabelY})`">
-        <rect :x="-model.labelWidth / 2" y="0" :width="model.labelWidth" height="22" rx="6" />
-        <text y="15" text-anchor="middle">MEDIANA · {{ model.medianText }}</text>
-      </g>
-
-      <text v-for="(label, index) in model.axisLabels" :key="index" class="distribution-axis-label" :x="label.x" :y="model.height - 30" text-anchor="middle">{{ label.text }}</text>
       <text class="distribution-axis-title" :x="model.left + model.plotWidth / 2" :y="model.height - 3" text-anchor="middle">
-        {{ kind === 'steps' ? 'Passi registrati nel giorno' : 'Durata del sonno per notte' }}
+        {{ kind === 'steps' ? 'Passi registrati nel giorno' : 'Durata del sonno per notte (ore)' }}
       </text>
       <text class="distribution-axis-title distribution-y-axis-title" :transform="`translate(17 ${model.top + model.plotHeight / 2}) rotate(-90)`" text-anchor="middle">
         {{ kind === 'steps' ? 'Numero di giorni' : 'Numero di notti' }}
@@ -159,8 +158,8 @@ const model = computed(() => {
     </svg>
     <div class="distribution-stats">
       <span>Campione <strong>{{ numberFmt.format(model.sampleCount) }}</strong></span>
-      <span>Media <strong>{{ model.meanText }}{{ kind === 'steps' ? ' passi' : '' }}</strong></span>
-      <span>Mediana <strong>{{ model.medianText }}{{ kind === 'steps' ? ' passi' : '' }}</strong></span>
+      <span>Media <strong>{{ model.meanText }}{{ kind === 'steps' ? ' passi' : ' h' }}</strong></span>
+      <span>Mediana <strong>{{ model.medianText }}{{ kind === 'steps' ? ' passi' : ' h' }}</strong></span>
       <span>Deviazione standard <strong>{{ model.deviationText }}</strong></span>
     </div>
   </div>

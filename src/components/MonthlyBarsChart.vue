@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { AggregateRow } from '../types/fit'
 import { monthLabel } from '../utils/date'
 import { formatCompact, formatDuration, oneDecimal, numberFmt } from '../utils/numbers'
+import { handleShiftWheelScroll } from '../composables/useShiftWheelScroll'
 
 const props = defineProps<{
   items: AggregateRow[]
@@ -54,22 +55,6 @@ function move(direction: -1 | 1) {
   element.scrollBy({ left: direction * Math.max(260, element.clientWidth * 0.78), behavior: 'smooth' })
 }
 
-function handleWheel(event: WheelEvent) {
-  const element = viewport.value
-  if (!element || element.scrollWidth <= element.clientWidth + 1) return
-
-  // Convert a conventional vertical wheel into horizontal navigation.
-  // Shift+wheel and horizontal trackpad gestures are handled as well.
-  const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
-  if (delta === 0) return
-  const maxScroll = element.scrollWidth - element.clientWidth
-  const atLeftEdge = element.scrollLeft <= 1
-  const atRightEdge = element.scrollLeft >= maxScroll - 1
-  if ((delta < 0 && atLeftEdge) || (delta > 0 && atRightEdge)) return
-  event.preventDefault()
-  element.scrollBy({ left: delta, behavior: 'auto' })
-}
-
 function handleKeydown(event: KeyboardEvent) {
   if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Home' && event.key !== 'End') return
   const element = viewport.value
@@ -101,7 +86,7 @@ watch(() => bars.value.length, async () => {
 <template>
   <div v-if="bars.length" class="monthly-chart-shell">
     <div class="monthly-chart-toolbar">
-      <span class="monthly-scroll-hint">{{ bars.length }} mesi · scorri per esplorare tutto lo storico</span>
+      <span class="monthly-scroll-hint">{{ bars.length }} mesi · Shift + rotella / swipe orizzontale</span>
       <div class="monthly-scroll-controls" aria-label="Navigazione grafico mensile">
         <button type="button" class="monthly-scroll-button" :disabled="!canScrollLeft" aria-label="Scorri verso i mesi precedenti" @click="move(-1)">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12.5 4.5-5.5 5.5 5.5 5.5" /></svg>
@@ -117,7 +102,7 @@ watch(() => bars.value.length, async () => {
       tabindex="0"
       role="region"
       aria-label="Grafico mensile scorrevole"
-      @wheel="handleWheel"
+      @wheel="handleShiftWheelScroll"
       @scroll.passive="syncScrollState"
       @keydown="handleKeydown"
     >

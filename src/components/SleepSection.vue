@@ -6,6 +6,7 @@ import { addDays, dateKey, formatDate } from '../utils/date'
 import { capitalize, formatDuration, formatHours, formatLongDuration, numberFmt, oneDecimal } from '../utils/numbers'
 import MonthlyBarsChart from './MonthlyBarsChart.vue'
 import DistributionChart from './DistributionChart.vue'
+import { handleShiftWheelScroll } from '../composables/useShiftWheelScroll'
 
 const props = defineProps<{ data: FitAnalytics }>()
 const weekRankMode = ref<'average' | 'total'>('average')
@@ -53,7 +54,7 @@ function sleepDayHours(item: SleepNight) {
       <div class="section-meta">{{ numberFmt.format(sleepDays.length) }} notti · {{ years.length }} anni · {{ sleepDays[0]?.method ?? 'nessun metodo' }}</div>
     </div>
 
-    <div class="sleep-kpis">
+    <div class="sleep-kpis" @wheel="handleShiftWheelScroll">
       <div class="sleep-kpi"><small>DURATA COMPLESSIVA</small><strong>{{ totalSleep ? formatLongDuration(totalSleep) : '—' }}</strong></div>
       <div class="sleep-kpi"><small>MEDIA PER NOTTE</small><strong>{{ averageSleep == null ? '—' : formatDuration(averageSleep) }}</strong></div>
       <div class="sleep-kpi"><small>NOTTE PIÙ LUNGA</small><strong>{{ bestNight ? formatDuration(bestNight.ms) : '—' }}</strong></div>

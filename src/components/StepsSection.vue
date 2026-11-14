@@ -107,7 +107,8 @@ const bestDayMetrics = computed(() => {
       </div>
     </article>
 
-    <article class="panel table-panel">
+    <div class="ranking-grid steps-ranking-grid">
+      <article class="panel table-panel">
       <div class="panel-heading responsive-heading">
         <div><span class="panel-label">CLASSIFICA GIORNALIERA</span><h3>I giorni con più passi</h3><p>La distanza è mostrata quando presente nell’esportazione.</p></div>
         <label class="select-wrap"><span>Mostra</span><select v-model.number="topLimit"><option :value="5">Top 5</option><option :value="10">Top 10</option><option :value="20">Top 20</option></select></label>
@@ -125,9 +126,9 @@ const bestDayMetrics = computed(() => {
           </tbody>
         </table>
       </div>
-    </article>
+      </article>
 
-    <article class="panel table-panel">
+      <article class="panel table-panel">
       <div class="panel-heading"><div><span class="panel-label">CLASSIFICA DISTANZA</span><h3>I giorni con più chilometri</h3><p>Classifica separata basata sulle distanze effettivamente registrate.</p></div></div>
       <div class="table-scroll">
         <table><thead><tr><th>#</th><th>Giorno</th><th>Distanza</th><th>Passi</th></tr></thead>
@@ -141,7 +142,8 @@ const bestDayMetrics = computed(() => {
           </tbody>
         </table>
       </div>
-    </article>
+      </article>
+    </div>
 
     <div class="summary-grid">
       <article class="panel">

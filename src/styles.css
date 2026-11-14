@@ -207,3 +207,59 @@ td:first-child{font-size:11px}
   .panel{padding:14px}
   .distribution-stats{display:grid;grid-template-columns:1fr 1fr}
 }
+
+/* Monthly charts: full history, native touch scrolling and wheel navigation. */
+.monthly-chart-shell{width:100%;min-width:0}
+.monthly-chart-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px;margin:0 0 5px}
+.monthly-scroll-hint{color:#839188;font-size:10px;letter-spacing:.01em}
+.monthly-scroll-controls{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.monthly-scroll-button{display:grid;place-items:center;width:31px;height:29px;border:1px solid var(--line-strong);border-radius:8px;background:rgba(255,255,255,.035);color:#c6d4c8;cursor:pointer;transition:background .16s,border-color .16s,color .16s}
+.monthly-scroll-button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.monthly-scroll-button:hover:not(:disabled){border-color:rgba(194,243,107,.48);background:rgba(194,243,107,.08);color:var(--accent)}
+.monthly-scroll-button:disabled{opacity:.28;cursor:not-allowed}
+.monthly-chart-viewport{width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#506151 transparent;cursor:grab;outline:none}
+.monthly-chart-viewport:active{cursor:grabbing}
+.monthly-chart-viewport:focus-visible{outline:1px solid rgba(194,243,107,.5);outline-offset:3px;border-radius:7px}
+.monthly-chart-viewport::-webkit-scrollbar{height:8px}
+.monthly-chart-viewport::-webkit-scrollbar-track{background:rgba(255,255,255,.025);border-radius:8px}
+.monthly-chart-viewport::-webkit-scrollbar-thumb{background:#506151;border-radius:8px}
+.monthly-chart-viewport .bar-chart{width:max-content;min-width:100%;min-height:205px;overflow:visible;display:flex;align-items:flex-end;gap:12px;padding:15px 3px 5px}
+.monthly-chart-viewport .bar-col{flex:0 0 68px;width:68px;min-width:68px;max-width:68px;height:188px;gap:8px}
+.monthly-chart-viewport .bar-track{width:38px;height:142px}
+.monthly-chart-viewport .bar-month{font-size:10px}
+.monthly-chart-viewport .bar-value{font-size:10px}
+
+/* Distribution chart labels and scales. */
+.distribution-callout rect{stroke-width:1;}
+.distribution-callout text{font:700 10px system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:.035em}
+.distribution-callout-mean rect{fill:rgba(243,199,119,.13);stroke:rgba(243,199,119,.8)}
+.distribution-callout-mean text{fill:#f6d697}
+.distribution-callout-median rect{fill:rgba(134,201,255,.12);stroke:rgba(134,201,255,.82)}
+.distribution-callout-median text{fill:#a9d9ff}
+.distribution-y-axis-title{font-size:11px;fill:#9aa99d}
+
+/* Keep related rankings paired on desktop and give the sleep tables clear separation. */
+.steps-ranking-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+.steps-ranking-grid .table-panel{margin-bottom:0}
+#sleepSection .ranking-grid{margin-top:30px}
+#sleepSection .ranking-grid .table-panel{margin-bottom:0}
+#sleepSection .weekly-panel{margin-top:22px}
+
+@media(max-width:760px){
+  .monthly-chart-toolbar{margin-bottom:4px}
+  .monthly-scroll-hint{font-size:10px}
+  .monthly-chart-viewport .bar-chart{gap:9px;min-height:188px;padding-top:12px}
+  .monthly-chart-viewport .bar-col{flex-basis:62px;width:62px;min-width:62px;max-width:62px;height:172px}
+  .monthly-chart-viewport .bar-track{height:126px;width:30px}
+  .monthly-chart-viewport .bar-value{font-size:9px}
+  .monthly-chart-viewport .bar-month{font-size:8px}
+  .steps-ranking-grid{grid-template-columns:minmax(0,1fr);gap:11px;margin-top:16px}
+  #sleepSection .ranking-grid{margin-top:22px}
+  #sleepSection .weekly-panel{margin-top:16px}
+  .distribution-svg{min-width:680px}
+}
+@media(max-width:410px){
+  .monthly-scroll-hint{font-size:9px}
+  .monthly-scroll-button{width:29px;height:28px}
+  .monthly-chart-viewport .bar-col{flex-basis:58px;width:58px;min-width:58px;max-width:58px}
+}

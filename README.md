@@ -1,6 +1,6 @@
 # Fit Archive — Vue + Vite
 
-Dashboard statica per analizzare localmente gli archivi ZIP di Google Takeout / Google Fit. Il progetto usa Vue 3, TypeScript e Vite; la decompressione e tutte le analisi avvengono nel browser e non richiedono un backend.
+Dashboard statica per analizzare localmente gli archivi ZIP di Google Takeout / Google Fit. Il progetto usa Vue 3, TypeScript e Vite; la decompressione e tutte le analisi avvengono nel browser e non richiedono un backend. Versione corrente: **2.1.0**.
 
 ## Requisiti
 
@@ -97,7 +97,8 @@ fit-archive/
 - Medie annuali e mensili; matrice mensile compatta con anni sulle righe e mesi sulle colonne.
 - Classifiche dei giorni con più passi e più chilometri.
 - Distanza associata ai giorni in classifica quando è presente nell'export.
-- Andamento mensile e distribuzione dei passi giornalieri con media, mediana e curva normale di riferimento.
+- Andamento mensile scorrevole sull’intera cronologia: rotella del mouse, Shift+rotella, trackpad, pulsanti di navigazione e swipe touch.
+- Distribuzione dei passi giornalieri con istogramma, media e mediana evidenziate sopra le rispettive linee, assi X/Y con scale ricavate dai dati e curva normale di riferimento.
 
 ### Sonno
 
@@ -105,9 +106,10 @@ fit-archive/
 - Totali e medie mensili e annuali.
 - Classifiche delle notti e delle settimane con più e meno sonno.
 - Giorno della settimana con durata media maggiore e minore.
-- Andamento mensile e distribuzione delle ore di sonno con media, mediana e curva normale di riferimento.
+- Andamento mensile scorrevole con gli stessi controlli desktop e mobile.
+- Distribuzione delle ore di sonno con istogramma, media e mediana evidenziate sopra le rispettive linee, assi X/Y con scale ricavate dai dati e curva normale di riferimento.
 
-Le schede KPI all-time scorrono orizzontalmente. I grafici di distribuzione mostrano frequenze osservate e sovrappongono una curva normale teorica come riferimento visivo: non è un modello predittivo e non implica che la distribuzione reale sia normale.
+Le schede KPI all-time scorrono orizzontalmente. I due elenchi dei record passi/distanza e le classifiche delle notti sono affiancati su desktop e si dispongono in colonna su schermi più stretti. I grafici di distribuzione mostrano frequenze osservate e sovrappongono una curva normale teorica come riferimento visivo: non è un modello predittivo e non implica che la distribuzione reale sia normale.
 
 ## Formati e criteri di lettura
 

@@ -281,4 +281,5 @@ td:first-child{font-size:11px}
 }
 
 /* App version is injected from package.json by vite.config.ts. */
-.brand-version{align-self:center;margin-left:-5px;color:#829187;font:500 9px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.035em;white-space:nowrap;opacity:.9}
+.brand-wordmark{display:inline-flex;align-items:flex-end;gap:7px;line-height:1.1}
+.brand-version{margin:0 0 1px;color:#829187;font:500 9px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.035em;white-space:nowrap;opacity:.9}

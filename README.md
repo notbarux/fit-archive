@@ -1,6 +1,6 @@
 # Fit Archive — Vue + Vite
 
-Dashboard statica per analizzare localmente gli archivi ZIP di Google Takeout / Google Fit. Il progetto usa Vue 3, TypeScript e Vite; la decompressione e tutte le analisi avvengono nel browser e non richiedono un backend. Versione corrente: **2.1.3**.
+Dashboard statica per analizzare localmente gli archivi ZIP di Google Takeout / Google Fit. Il progetto usa Vue 3, TypeScript e Vite; la decompressione e tutte le analisi avvengono nel browser e non richiedono un backend. Versione corrente: **2.1.4**.
 
 ## Requisiti
 
@@ -158,3 +158,9 @@ JSZip è distribuito secondo licenza MIT; il testo della licenza è incluso in `
 - Corretto il type-check della versione mostrata nell'header: `AppHeader.vue` espone `__APP_VERSION__` come binding di `<script setup>` (`appVersion`), così il template non cerca la costante globale direttamente nel contesto dell'istanza Vue.
 - Aggiunto `src/env.d.ts` esplicitamente agli input di `tsconfig.json` per includere la dichiarazione TypeScript della costante iniettata da Vite.
 - La versione continua a essere letta esclusivamente da `package.json`.
+
+
+## Aggiornamenti 2.1.4
+
+- Allineata la versione mostrata nell'header al bordo inferiore del wordmark `fitarchive`, raggruppandoli in un unico elemento tipografico.
+- La versione continua a essere letta da `package.json` tramite la costante di build definita in `vite.config.ts`.

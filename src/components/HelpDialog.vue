@@ -25,7 +25,11 @@ function onBackdropClick(event: MouseEvent) {
   <dialog ref="dialog" class="help-dialog" aria-labelledby="helpTitle" @click="onBackdropClick" @close="close">
     <div class="dialog-header">
       <div><span class="panel-label">GOOGLE TAKEOUT</span><h2 id="helpTitle">Come recuperare i dati</h2></div>
-      <button class="icon-button" type="button" aria-label="Chiudi" @click="close">×</button>
+      <button class="dialog-close-button" type="button" aria-label="Chiudi" @click="close">
+        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <path d="M5 5l10 10M15 5L5 15" />
+        </svg>
+      </button>
     </div>
     <ol class="takeout-steps">
       <li>Apri <a href="https://takeout.google.com/" target="_blank" rel="noopener">Google Takeout</a> e accedi con l'account in cui è sincronizzato Google Fit.</li>

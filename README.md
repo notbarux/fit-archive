@@ -164,3 +164,8 @@ JSZip è distribuito secondo licenza MIT; il testo della licenza è incluso in `
 
 - Allineata la versione mostrata nell'header al bordo inferiore del wordmark `fitarchive`, raggruppandoli in un unico elemento tipografico.
 - La versione continua a essere letta da `package.json` tramite la costante di build definita in `vite.config.ts`.
+
+
+## v2.1.7
+
+- Fixed the desktop help-dialog close control: the typographic multiplication glyph is replaced with a centered inline SVG cross and a dedicated fixed-size button style.

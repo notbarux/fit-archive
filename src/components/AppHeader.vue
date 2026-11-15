@@ -98,9 +98,16 @@ function onDrop(event: DragEvent) {
 
     <div class="header-actions">
       <span class="privacy-pill"><span class="privacy-dot" /> Solo locale</span>
-      <button class="button button-quiet header-help" type="button" aria-haspopup="dialog" @click="emit('showHelp')">
-        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" /><path d="M7.9 7.5a2.2 2.2 0 1 1 3.8 1.5c-1 .9-1.7 1.2-1.7 2.5M10 14.4v.1" /></svg>
-        Come recuperare i dati
+      <button
+        class="button button-quiet header-help"
+        type="button"
+        aria-label="Come recuperare i dati"
+        aria-haspopup="dialog"
+        @click="emit('showHelp')"
+      >
+        <span class="header-help-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" focusable="false"><circle cx="10" cy="10" r="7.5" /><path d="M7.9 7.5a2.2 2.2 0 1 1 3.8 1.5c-1 .9-1.7 1.2-1.7 2.5M10 14.4v.1" /></svg>
+        </span>
       </button>
       <button class="button button-primary" type="button" :disabled="importing" @click="openFilePicker">
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m0 0L6.5 6.5M10 3l3.5 3.5M3.5 12.5v3A1.5 1.5 0 0 0 5 17h10a1.5 1.5 0 0 0 1.5-1.5v-3" /></svg>
